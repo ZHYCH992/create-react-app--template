@@ -67,6 +67,7 @@ service.interceptors.response.use(response => {
 		data,
 		data: { result, resultCode },
 	} = response || {};
+	response.weekNumber ? (data.weekNumber = response.weekNumber) : void 0;
 	onceResponseWarning(data, status);
 	if (resultCode !== 0 || status >= 300) {
 		return Promise.reject(data);

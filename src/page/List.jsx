@@ -3,7 +3,7 @@
 /** 所需的各种插件 **/
 import { nanoid } from 'nanoid';
 import React, { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 /** 所需的各种资源 **/
 import { useUpdateEffect } from 'ahooks';
 import { Button, Table, message } from 'antd';
@@ -44,6 +44,7 @@ export default function List(props) {
 			key: 'convener',
 		},
 	];
+	const navigate = useNavigate();
 	const { id } = useParams();
 	const [messageApi, contextHolder] = message.useMessage();
 	const key = 'weekList';
@@ -64,14 +65,22 @@ export default function List(props) {
 		],
 		onSuccess: result => {
 			if (result?.data) {
-				setData([
-					...result.data.map(obj => {
+				// 按日期进行排序
+				data.sort((a, b) => new Date(a.date) - new Date(b.date));
+				const modifiedData = data.map((item, index, arr) => {
+					// 如果是第一个元素或者和前一个元素的日期不同，则保留该元素，否则将date字段设置为空
+					if (index === 0 || item.date !== arr[index - 1].date) {
 						return {
-							...obj,
+							...item,
 							key: nanoid(),
+							date: `${item.date}
+						${item.dayOfWeek}`,
 						};
-					}),
-				]);
+					} else {
+						return { ...item, date: '', key: nanoid() }; // 设置date字段为空
+					}
+				});
+				setData(modifiedData);
 			}
 		},
 		onerror: err => {
@@ -83,20 +92,46 @@ export default function List(props) {
 			});
 		},
 	});
-
+	const lastWeek = () => {
+		const page = Number(id) - 1;
+		if (page <= 0) {
+			messageApi.open({
+				key,
+				type: 'warning',
+				content: '没有了，已经到达第一周了！',
+			});
+			return;
+		}
+		navigate(`/list/${page}`);
+		return;
+	};
+	const nextWeek = () => {
+		const page = Number(id) + 1;
+		if (page > data.weekNumber) {
+			messageApi.open({
+				key,
+				type: 'warning',
+				content: '没有了，已经到达本周了！',
+			});
+			return;
+		}
+		navigate(`/list/${page}`);
+		return;
+	};
 	useUpdateEffect(() => {
 		requestData({ id: id });
+		setData(data);
 	}, [id]);
 	return (
 		<>
 			{contextHolder}
 			<div className='top'>
-				<Button className='left'>
-					<Link to={`/list/${Number(id) - 1}`}>上一周</Link>
+				<Button className='left' onClick={() => lastWeek()} disabled={Number(id) - 1 <= 0}>
+					上一周
 				</Button>
 				<div className='title'>一周会议安排</div>
-				<Button className='right'>
-					<Link to={`/list/${Number(id) + 1}`}>下一周</Link>
+				<Button className='right' onClick={() => nextWeek()} disabled={Number(id) + 1 >= data.weekNumber}>
+					下一周
 				</Button>
 			</div>
 			<Table
