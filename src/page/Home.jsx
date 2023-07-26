@@ -9,6 +9,7 @@ export default function Home() {
 	const [messageApi, contextHolder] = message.useMessage();
 	const key = 'updatable';
 	const [data, setData] = useState([]);
+	const [week, setWeek] = useState(0);
 	const [pagetotal, setTotal] = useState(0);
 	const { run: requestData, loading } = useBaseRequest(getInitMain, {
 		defaultParams: [
@@ -18,37 +19,28 @@ export default function Home() {
 			},
 		],
 		onSuccess: result => {
-			console.log(result)
 			if (result?.data) {
+				console.log(result);
+				setWeek(result.currentWeek);
 				setData(result.data);
 				setTotal(result.total);
-			} else {
-				messageApi.open({
-					key,
-					type: 'warning',
-					content: result.errorMsg,
-				});
 			}
 		},
 		onerror: err => {
 			setData([]);
-			messageApi.open({
-				key,
-				type: 'error',
-				content: err,
-			});
 		},
 	});
 	return (
 		<Space direction='vertical' style={{ display: 'flex' }}>
 			{contextHolder}
+			{}
 			<List
 				bordered
 				loading={loading}
 				dataSource={data}
 				renderItem={item => (
 					<List.Item className='listItem' key={item.id}>
-						<Link to={'/list/' + item.id}>{item.name}</Link>
+						<Link to={`/list/${item.id}/${week}`}>{item.name}</Link>
 					</List.Item>
 				)}
 			/>

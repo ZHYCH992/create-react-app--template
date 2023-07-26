@@ -48,10 +48,8 @@ message.config({
 
 let onceResponseWarningKey = 'onceResponseWarningKey';
 
-export function onceResponseWarning(res, status) {
-	console.log('axios', res);
-
-	if (res?.resultCode !== 0) {
+export function onceResponseWarning(res) {
+	if (res?.resultCode !== 0 || !res || !res?.result?.data) {
 		message.destroy(onceResponseWarningKey);
 		message.warning({
 			content: res.errorMsg || `响应错误，请重试或联系管理员`,
@@ -67,8 +65,9 @@ service.interceptors.response.use(response => {
 		data,
 		data: { result, resultCode },
 	} = response || {};
-	response.weekNumber ? (data.weekNumber = response.weekNumber) : void 0;
-	onceResponseWarning(data, status);
+	onceResponseWarning(data);
+	data.weekInfo ? (data.result.currentWeek = data.weekInfo) : void 0;
+
 	if (resultCode !== 0 || status >= 300) {
 		return Promise.reject(data);
 	}
