@@ -21,11 +21,7 @@ export default function Home() {
 			if (result?.data) {
 				console.log(result);
 				setWeek(result.currentWeek);
-<<<<<<< HEAD
-				setData(reverseArray(result.data));
-=======
 				setData(result.data);
->>>>>>> 2c438b8f0e6cd16ec80283803863d4ac2de7eec2
 				setTotal(result.total);
 			}
 		},
@@ -33,6 +29,7 @@ export default function Home() {
 			setData([]);
 		},
 	});
+	//按地标倒序
 	function reverseArray(arr) {
 		var length = arr.length;
 		var mid = Math.floor(length / 2);

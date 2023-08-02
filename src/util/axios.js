@@ -67,11 +67,7 @@ service.interceptors.response.use(response => {
 	} = response || {};
 	onceResponseWarning(data);
 	data.weekInfo ? (data.result.currentWeek = data.weekInfo) : void 0;
-<<<<<<< HEAD
 console.log(response)
-=======
-
->>>>>>> 2c438b8f0e6cd16ec80283803863d4ac2de7eec2
 	if (resultCode !== 0 || status >= 300) {
 		return Promise.reject(data);
 	}

@@ -3,11 +3,7 @@
 /** 所需的各种插件 **/
 import { nanoid } from 'nanoid';
 import React, { useState } from 'react';
-<<<<<<< HEAD
 import { useNavigate, useParams } from 'react-router-dom';
-=======
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
->>>>>>> 2c438b8f0e6cd16ec80283803863d4ac2de7eec2
 /** 所需的各种资源 **/
 import { useUpdateEffect } from 'ahooks';
 import { Button, Table, message } from 'antd';
@@ -31,8 +27,8 @@ export default function List(props) {
 				return {
 					children: (
 						<>
-							<div>{text}</div>
-							<div>{record.dayOfWeek}</div>
+							<div key={text}>{text}</div>
+							<div key={record.dayOfWeek}>{record.dayOfWeek}</div>
 						</>
 					),
 					props: {
@@ -67,10 +63,6 @@ export default function List(props) {
 			key: 'convener',
 		},
 	];
-<<<<<<< HEAD
-=======
-	const location = useLocation();
->>>>>>> 2c438b8f0e6cd16ec80283803863d4ac2de7eec2
 	const navigate = useNavigate();
 	const { id, week } = useParams();
 	const [messageApi, contextHolder] = message.useMessage();
@@ -102,9 +94,12 @@ export default function List(props) {
 			console.log(result);
 			result?.errorMsg ? setMsg(result.errorMsg) : void 0;
 			if (result?.data) {
-<<<<<<< HEAD
 				// // 按日期进行排序
-				result.data.sort((a, b) => new Date(a.date) - new Date(b.date));
+				result.data
+					.map(i => {
+						return { ...i, key: nanoid() };
+					})
+					.sort((a, b) => new Date(a.date) - new Date(b.date));
 				// console.log(result.data);
 				// const modifiedData = result.data.map((item, index, arr) => {
 				// 	// 如果是第一个元素或者和前一个元素的日期不同，则保留该元素，否则将date字段设置为空
@@ -119,85 +114,53 @@ export default function List(props) {
 				// 	}
 				// });
 				setData(result.data);
-=======
-				// 按日期进行排序
-				result.data.sort((a, b) => new Date(a.date) - new Date(b.date));
-				console.log(result.data);
-				const modifiedData = result.data.map((item, index, arr) => {
-					// 如果是第一个元素或者和前一个元素的日期不同，则保留该元素，否则将date字段设置为空
-					if (index === 0 || item.date !== arr[index - 1].date) {
-						return {
-							...item,
-							key: nanoid(),
-							date: `${item.date}
-							\n
-							${item.dayOfWeek}`,
-						};
-					} else {
-						return { ...item, date: '', key: nanoid() }; // 设置date字段为空
-					}
-				});
-				setData(modifiedData);
->>>>>>> 2c438b8f0e6cd16ec80283803863d4ac2de7eec2
 			} else {
 				setData([]);
 			}
 		},
 	});
 	const lastWeek = () => {
-		const page = Number(id) - 1;
+		let [year, month] = [parseInt(id.substring(0, 4)), parseInt(id.substring(4))];
+		const page = month - 1;
+		console.log(year, month);
 		if (page <= 0) {
-			messageApi.open({
-				key: nanoid(),
-				type: 'warning',
-				content: '没有了，已经到达第一周了！',
-			});
-			return;
+			year--;
+			month = 52;
+		} else {
+			month--;
 		}
-		navigate(`/list/${page}/${week}`);
-		return;
+		navigate(`/list/${year}${String(month).padStart(2, '0')}/${week}`);
 	};
+
 	const nextWeek = () => {
-		const page = Number(id) + 1;
-		if (page > week) {
-			messageApi.open({
-				key: nanoid(),
-				type: 'warning',
-				content: '没有了，已经到达本周了！',
-			});
-			return;
+		let [year, month] = [parseInt(id.substring(0, 4)), parseInt(id.substring(4))];
+		const page = month + 1;
+		if (page > 52) {
+			year++;
+			month = 1;
+		} else {
+			month++;
 		}
-		navigate(`/list/${page}/${week}`);
-		return;
+		navigate(`/list/${year}${String(month).padStart(2, '0')}/${week}`);
 	};
 	useUpdateEffect(() => {
-		console.log('week', week);
 		requestData({ id: id });
 	}, [id]);
+
 	return (
 		<>
 			{contextHolder}
-<<<<<<< HEAD
 			<div className='callback'>
-				<Button type='primary'>
+				<Button type='primary' key='callback'>
 					<Link to={'/'}> &lt; 返回列表</Link>
-=======
-			<div className='top'>
-				<Button className='left' onClick={() => lastWeek()} disabled={Number(id) - 1 <= 0}>
-					上一周
-				</Button>
-				<div className='title'>一周会议安排</div>
-				<Button className='right' onClick={() => nextWeek()} disabled={Number(id) + 1 > week}>
-					下一周
->>>>>>> 2c438b8f0e6cd16ec80283803863d4ac2de7eec2
 				</Button>
 			</div>
 			<div className='top'>
-				<Button className='left' onClick={() => lastWeek()} disabled={Number(id) - 1 <= 0}>
+				<Button className='left' key='left' onClick={() => lastWeek()}>
 					上一周
 				</Button>
 				<div className='title'>一周会议安排</div>
-				<Button className='right' onClick={() => nextWeek()} disabled={Number(id) + 1 > week}>
+				<Button className='right' key='right' onClick={() => nextWeek()}>
 					下一周
 				</Button>
 			</div>
@@ -211,7 +174,7 @@ export default function List(props) {
 				})}
 				locale={{ emptyText: <Svg title='noData' text={msg || '本周暂无数据'} /> }}
 			/>
-			<UseModal title={modalTitle} id={modalid} open={modalOpen} setOpen={setModalOpen} />
+			<UseModal title={modalTitle} id={modalid} key={modalid} open={modalOpen} setOpen={setModalOpen} />
 		</>
 	);
 }
