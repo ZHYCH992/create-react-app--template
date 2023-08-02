@@ -33,7 +33,6 @@ export default function Home() {
 	return (
 		<Space direction='vertical' style={{ display: 'flex' }}>
 			{contextHolder}
-			{}
 			<List
 				bordered
 				loading={loading}
