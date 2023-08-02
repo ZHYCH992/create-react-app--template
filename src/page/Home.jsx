@@ -1,16 +1,15 @@
+import { List, Pagination, Space, message } from 'antd';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getInitMain } from './../api/url';
 import useBaseRequest from './../hooks/useBaseRequest';
 
-import { List, Pagination, Space, message } from 'antd';
-
 export default function Home() {
 	const [messageApi, contextHolder] = message.useMessage();
-	const key = 'updatable';
 	const [data, setData] = useState([]);
 	const [week, setWeek] = useState(0);
 	const [pagetotal, setTotal] = useState(0);
+
 	const { run: requestData, loading } = useBaseRequest(getInitMain, {
 		defaultParams: [
 			{
@@ -22,7 +21,11 @@ export default function Home() {
 			if (result?.data) {
 				console.log(result);
 				setWeek(result.currentWeek);
+<<<<<<< HEAD
+				setData(reverseArray(result.data));
+=======
 				setData(result.data);
+>>>>>>> 2c438b8f0e6cd16ec80283803863d4ac2de7eec2
 				setTotal(result.total);
 			}
 		},
@@ -30,6 +33,16 @@ export default function Home() {
 			setData([]);
 		},
 	});
+	function reverseArray(arr) {
+		var length = arr.length;
+		var mid = Math.floor(length / 2);
+		for (var i = 0; i < mid; i++) {
+			var temp = arr[i];
+			arr[i] = arr[length - 1 - i];
+			arr[length - 1 - i] = temp;
+		}
+		return arr;
+	}
 	return (
 		<Space direction='vertical' style={{ display: 'flex' }}>
 			{contextHolder}

@@ -3,10 +3,15 @@
 /** 所需的各种插件 **/
 import { nanoid } from 'nanoid';
 import React, { useState } from 'react';
+<<<<<<< HEAD
+import { useNavigate, useParams } from 'react-router-dom';
+=======
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+>>>>>>> 2c438b8f0e6cd16ec80283803863d4ac2de7eec2
 /** 所需的各种资源 **/
 import { useUpdateEffect } from 'ahooks';
 import { Button, Table, message } from 'antd';
+import { Link } from 'react-router-dom';
 import UseModal from '../component/UseModal';
 import { Svg } from '../util/svg';
 import { getInitList } from './../api/url';
@@ -18,6 +23,23 @@ export default function List(props) {
 			title: '日期',
 			dataIndex: 'date',
 			key: 'date',
+			render: (text, record, index) => {
+				const current = record.date;
+				const previous = index > 0 ? data[index - 1].date : null;
+				//当前日期与上一个日期相同则当前日期列为0，不同则为列表中所有相同的长度
+				const rowSpan = previous === current ? 0 : data.filter(item => item.date === current).length;
+				return {
+					children: (
+						<>
+							<div>{text}</div>
+							<div>{record.dayOfWeek}</div>
+						</>
+					),
+					props: {
+						rowSpan: rowSpan,
+					},
+				};
+			},
 		},
 		{
 			title: '时间',
@@ -45,7 +67,10 @@ export default function List(props) {
 			key: 'convener',
 		},
 	];
+<<<<<<< HEAD
+=======
 	const location = useLocation();
+>>>>>>> 2c438b8f0e6cd16ec80283803863d4ac2de7eec2
 	const navigate = useNavigate();
 	const { id, week } = useParams();
 	const [messageApi, contextHolder] = message.useMessage();
@@ -77,6 +102,24 @@ export default function List(props) {
 			console.log(result);
 			result?.errorMsg ? setMsg(result.errorMsg) : void 0;
 			if (result?.data) {
+<<<<<<< HEAD
+				// // 按日期进行排序
+				result.data.sort((a, b) => new Date(a.date) - new Date(b.date));
+				// console.log(result.data);
+				// const modifiedData = result.data.map((item, index, arr) => {
+				// 	// 如果是第一个元素或者和前一个元素的日期不同，则保留该元素，否则将date字段设置为空
+				// 	if (index === 0 || item.date !== arr[index - 1].date) {
+				// 		return {
+				// 			...item,
+				// 			key: nanoid(),
+				// 			date: `${item.date} ${item.dayOfWeek}`,
+				// 		};
+				// 	} else {
+				// 		return { ...item, date: '', key: nanoid() }; // 设置date字段为空
+				// 	}
+				// });
+				setData(result.data);
+=======
 				// 按日期进行排序
 				result.data.sort((a, b) => new Date(a.date) - new Date(b.date));
 				console.log(result.data);
@@ -95,6 +138,7 @@ export default function List(props) {
 					}
 				});
 				setData(modifiedData);
+>>>>>>> 2c438b8f0e6cd16ec80283803863d4ac2de7eec2
 			} else {
 				setData([]);
 			}
@@ -133,6 +177,21 @@ export default function List(props) {
 	return (
 		<>
 			{contextHolder}
+<<<<<<< HEAD
+			<div className='callback'>
+				<Button type='primary'>
+					<Link to={'/'}> &lt; 返回列表</Link>
+=======
+			<div className='top'>
+				<Button className='left' onClick={() => lastWeek()} disabled={Number(id) - 1 <= 0}>
+					上一周
+				</Button>
+				<div className='title'>一周会议安排</div>
+				<Button className='right' onClick={() => nextWeek()} disabled={Number(id) + 1 > week}>
+					下一周
+>>>>>>> 2c438b8f0e6cd16ec80283803863d4ac2de7eec2
+				</Button>
+			</div>
 			<div className='top'>
 				<Button className='left' onClick={() => lastWeek()} disabled={Number(id) - 1 <= 0}>
 					上一周
@@ -142,6 +201,7 @@ export default function List(props) {
 					下一周
 				</Button>
 			</div>
+
 			<Table
 				columns={columns}
 				dataSource={data}
