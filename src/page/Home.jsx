@@ -1,15 +1,15 @@
+import { List, Pagination, Space, message } from 'antd';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getInitMain } from './../api/url';
 import useBaseRequest from './../hooks/useBaseRequest';
 
-import { List, Pagination, Space, message } from 'antd';
-
 export default function Home() {
 	const [messageApi, contextHolder] = message.useMessage();
-	const key = 'updatable';
 	const [data, setData] = useState([]);
+	const [week, setWeek] = useState(0);
 	const [pagetotal, setTotal] = useState(0);
+
 	const { run: requestData, loading } = useBaseRequest(getInitMain, {
 		defaultParams: [
 			{
@@ -18,37 +18,38 @@ export default function Home() {
 			},
 		],
 		onSuccess: result => {
-			console.log(result)
 			if (result?.data) {
-				setData(result.data);
+				console.log(result);
+				setWeek(result.currentWeek);
+				setData(reverseArray(result.data));
 				setTotal(result.total);
-			} else {
-				messageApi.open({
-					key,
-					type: 'warning',
-					content: result.errorMsg,
-				});
 			}
 		},
 		onerror: err => {
 			setData([]);
-			messageApi.open({
-				key,
-				type: 'error',
-				content: err,
-			});
 		},
 	});
+	function reverseArray(arr) {
+		var length = arr.length;
+		var mid = Math.floor(length / 2);
+		for (var i = 0; i < mid; i++) {
+			var temp = arr[i];
+			arr[i] = arr[length - 1 - i];
+			arr[length - 1 - i] = temp;
+		}
+		return arr;
+	}
 	return (
 		<Space direction='vertical' style={{ display: 'flex' }}>
 			{contextHolder}
+			{}
 			<List
 				bordered
 				loading={loading}
 				dataSource={data}
 				renderItem={item => (
 					<List.Item className='listItem' key={item.id}>
-						<Link to={'/list/' + item.id}>{item.name}</Link>
+						<Link to={`/list/${item.id}/${week}`}>{item.name}</Link>
 					</List.Item>
 				)}
 			/>

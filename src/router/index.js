@@ -39,7 +39,7 @@ export default function RootRouterContainer(props) {
 				<Router>
 					<Routes>
 						<Route path='/' element={onEnter(<Home />)} />
-						<Route path='/list/:id' element={onEnter(<List />)} />
+						<Route path='/list/:id/:week' element={onEnter(<List />)} />
 					</Routes>
 				</Router>
 			</>
