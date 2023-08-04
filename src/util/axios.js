@@ -15,7 +15,6 @@ service.interceptors.request.use(config => {
 		const url = window.location.href;
 		const match = url.match(/_p=([^&]+)/);
 		const _p = match ? match[1] : null;
-		console.log(_p);
 		if (!_p) {
 			message.error({
 				content: '请在href中添加_p参数！',
@@ -67,7 +66,6 @@ service.interceptors.response.use(response => {
 	} = response || {};
 	onceResponseWarning(data);
 	data.weekInfo ? (data.result.currentWeek = data.weekInfo) : void 0;
-console.log(response)
 	if (resultCode !== 0 || status >= 300) {
 		return Promise.reject(data);
 	}

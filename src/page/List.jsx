@@ -91,7 +91,6 @@ export default function List(props) {
 			},
 		],
 		onSuccess: result => {
-			console.log(result);
 			result?.errorMsg ? setMsg(result.errorMsg) : void 0;
 			if (result?.data) {
 				// // 按日期进行排序
@@ -100,7 +99,6 @@ export default function List(props) {
 						return { ...i, key: nanoid() };
 					})
 					.sort((a, b) => new Date(a.date) - new Date(b.date));
-				// console.log(result.data);
 				// const modifiedData = result.data.map((item, index, arr) => {
 				// 	// 如果是第一个元素或者和前一个元素的日期不同，则保留该元素，否则将date字段设置为空
 				// 	if (index === 0 || item.date !== arr[index - 1].date) {
@@ -122,7 +120,6 @@ export default function List(props) {
 	const lastWeek = () => {
 		let [year, month] = [parseInt(id.substring(0, 4)), parseInt(id.substring(4))];
 		const page = month - 1;
-		console.log(year, month);
 		if (page <= 0) {
 			year--;
 			month = 52;
@@ -131,7 +128,6 @@ export default function List(props) {
 		}
 		navigate(`/list/${year}${String(month).padStart(2, '0')}/${week}`);
 	};
-
 	const nextWeek = () => {
 		let [year, month] = [parseInt(id.substring(0, 4)), parseInt(id.substring(4))];
 		const page = month + 1;
@@ -141,12 +137,26 @@ export default function List(props) {
 		} else {
 			month++;
 		}
+
 		navigate(`/list/${year}${String(month).padStart(2, '0')}/${week}`);
 	};
+	//路由拦截，最大显示至当前周
+	const routerX = () => {
+		const y = new Date().getFullYear();
+		let [year, month] = [parseInt(id.substring(0, 4)), parseInt(id.substring(4))];
+		if (year == y && month > week) {
+			messageApi.open({
+				key: nanoid(),
+				type: 'warning',
+				content: 'url输入有误，已经为您跳转至本周！',
+			});
+			navigate(`/list/${y}${week}/${week}`);
+		}
+	};
+	routerX();
 	useUpdateEffect(() => {
 		requestData({ id: id });
 	}, [id]);
-
 	return (
 		<>
 			{contextHolder}
@@ -160,7 +170,7 @@ export default function List(props) {
 					上一周
 				</Button>
 				<div className='title'>一周会议安排</div>
-				<Button className='right' key='right' onClick={() => nextWeek()}>
+				<Button className='right' key='right' onClick={() => nextWeek()} disabled={id == `${new Date().getFullYear()}${week}`}>
 					下一周
 				</Button>
 			</div>
@@ -174,7 +184,7 @@ export default function List(props) {
 				})}
 				locale={{ emptyText: <Svg title='noData' text={msg || '本周暂无数据'} /> }}
 			/>
-			<UseModal title={modalTitle} id={modalid} key={modalid} open={modalOpen} setOpen={setModalOpen} />
+			<UseModal title={modalTitle} id={modalid} open={modalOpen} setOpen={setModalOpen} />
 		</>
 	);
 }
