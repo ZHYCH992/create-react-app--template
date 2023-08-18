@@ -9,6 +9,8 @@ import Home from '../page/Home';
 import List from '../page/List';
 // antd的多语言
 import { ConfigProvider } from 'antd';
+import zhCN from 'antd/es/locale/zh_CN';
+
 // import { zhCN } from 'antd/lib/locale-provider/zh_CN';
 
 /** 组件 **/
@@ -34,15 +36,13 @@ export default function RootRouterContainer(props) {
 	}
 
 	return (
-		<ConfigProvider >
-			<>
-				<Router>
-					<Routes>
-						<Route path='/' element={onEnter(<Home />)} />
-						<Route path='/list/:id/:week' element={onEnter(<List />)} />
-					</Routes>
-				</Router>
-			</>
+		<ConfigProvider locale={zhCN}>
+			<Router>
+				<Routes>
+					<Route path='/' element={onEnter(<Home />)} />
+					<Route path='/list/:id/:week' element={onEnter(<List />)} />
+				</Routes>
+			</Router>
 		</ConfigProvider>
 	);
 }

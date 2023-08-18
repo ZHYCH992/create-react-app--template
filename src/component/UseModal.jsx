@@ -73,7 +73,13 @@ const UseModal = ({ title, id, open, setOpen }) => {
 	}, [open]);
 	return (
 		<>
-			<Modal open={open} centered title={title} onCancel={handleCancel} onOk={handleCancel}>
+			<Modal
+				open={open}
+				centered
+				title={title}
+				onOk={handleCancel}
+				cancelButtonProps={{ style: { display: 'none' } }} // 设置取消按钮不显示
+			>
 				<Descriptions column={4} bordered>
 					<Descriptions.Item label='活动名称' span={4}>
 						{data.theme}
