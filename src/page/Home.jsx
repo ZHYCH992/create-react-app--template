@@ -1,5 +1,5 @@
 import { List, Pagination, Space, message } from 'antd';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getInitMain } from './../api/url';
 import useBaseRequest from './../hooks/useBaseRequest';
@@ -14,20 +14,19 @@ export default function Home() {
 		defaultParams: [
 			{
 				page: 1,
-				row: 10,
-			},
+				row: 10
+			}
 		],
 		onSuccess: result => {
 			if (result?.data) {
-				console.log(result);
-				setWeek(result.currentWeek);
+				setWeek(result.currentWeek + 1);
 				setData(result.data);
 				setTotal(result.total);
 			}
 		},
 		onerror: err => {
 			setData([]);
-		},
+		}
 	});
 	//按地标倒序
 	function reverseArray(arr) {
@@ -62,7 +61,7 @@ export default function Home() {
 					onChange={(page, pageSize) =>
 						requestData({
 							page: page,
-							row: pageSize,
+							row: pageSize
 						})
 					}
 				/>

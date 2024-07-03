@@ -4,14 +4,14 @@ process.env.NODE_ENV === 'development' ? (context = '/api/webpluspro') : (contex
 const url = {
 	main: `${context}/_web/_weeklyMeetingShow/api/weeks.rst`,
 	list: `${context}/_web/_weeklyMeetingShow/api/week/1.rst`,
-	info: `${context}/_web/_weeklyMeetingShow/api/meeting/1.rst`,
+	info: `${context}/_web/_weeklyMeetingShow/api/meeting/1.rst`
 };
 
 function getInitMain(parameters = {}) {
 	return {
 		url: url.main,
 		method: 'post',
-		data: parameters,
+		data: parameters
 	};
 }
 function getInitList(parameters = {}) {
@@ -19,7 +19,7 @@ function getInitList(parameters = {}) {
 	return {
 		url: `${context}/_web/_weeklyMeetingShow/api/week/${id}.rst`,
 		method: 'post',
-		data: parameters,
+		data: parameters
 	};
 }
 function getInitInfo(parameters = {}) {
@@ -27,9 +27,8 @@ function getInitInfo(parameters = {}) {
 	return {
 		url: `${context}/_web/_weeklyMeetingShow/api/meeting/${id}.rst`,
 		method: 'post',
-		data: parameters,
+		data: parameters
 	};
 }
 
 export { getInitInfo, getInitList, getInitMain };
-
